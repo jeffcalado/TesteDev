@@ -1,0 +1,72 @@
+﻿@model IEnumerable<SinqiaMVC.Models.MovimentoManual>
+
+@{
+    ViewData["Title"] = "Movimentos Manuais";
+}
+
+<h1>Movimentos Manuais</h1>
+
+<p>
+    <a asp-action="Create">Novo</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Mês
+            </th>
+            <th>
+                Ano
+            </th>
+            <th>
+                Códido do Produto
+            </th>
+            <th>
+                Descrição do Produto
+            </th>
+            <th>
+                NR Lançamento
+            </th>
+            <th>
+                Descrição
+            </th>
+            <th>
+               Valor
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DAT_MES)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DAT_ANO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.COD_PRODUTO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProdutoCosif.Produto.DES_PRODUTO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NUM_LANCAMENTO)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DES_DESCRICAO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VAL_VALOR)
+            </td>
+            <td>
+                    @Html.ActionLink("Edit", "Edit", new { mes = item.DAT_MES, ano = item.DAT_ANO , lancamento = item.NUM_LANCAMENTO }) |
+              @*   @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) *@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

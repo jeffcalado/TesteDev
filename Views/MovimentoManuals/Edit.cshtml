@@ -1,0 +1,61 @@
+﻿@model SinqiaMVC.Models.MovimentoManual
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>MovimentoManual</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DAT_MES" />
+            <input type="hidden" asp-for="DAT_ANO" />
+            <input type="hidden" asp-for="NUM_LANCAMENTO" />
+            <div class="form-group">
+                <label asp-for="COD_PRODUTO" class="control-label"></label>
+                <select asp-for="COD_PRODUTO" class="form-control" asp-items="ViewBag.COD_PRODUTO"></select>
+                <span asp-validation-for="COD_PRODUTO" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="COD_COSIF" class="control-label"></label>
+                <select asp-for="COD_COSIF" class="form-control" asp-items="ViewBag.COD_COSIF"></select>
+                <span asp-validation-for="COD_COSIF" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DES_DESCRICAO" class="control-label"></label>
+                <input asp-for="DES_DESCRICAO" class="form-control" />
+                <span asp-validation-for="DES_DESCRICAO" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DAT_MOVIMENTO" class="control-label"></label>
+                <input asp-for="DAT_MOVIMENTO" class="form-control" />
+                <span asp-validation-for="DAT_MOVIMENTO" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="COD_USUARIO" class="control-label"></label>
+                <input asp-for="COD_USUARIO" class="form-control" />
+                <span asp-validation-for="COD_USUARIO" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VAL_VALOR" class="control-label"></label>
+                <input asp-for="VAL_VALOR" class="form-control" />
+                <span asp-validation-for="VAL_VALOR" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
