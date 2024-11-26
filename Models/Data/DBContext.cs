@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SinqiaMVC.Models;
+using SinqiaParibas.Models;
 
 
 public class AppDbContext : DbContext

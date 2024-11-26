@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SinqiaMVC.Models;
+using SinqiaParibas.Models;
+using SinqiaParibas.ViewModels;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SinqiaParibas.Controllers
@@ -20,10 +21,21 @@ namespace SinqiaParibas.Controllers
         }
 
         // GET: MovimentoManuals
+
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.MovimentosManuais.Include(m => m.ProdutoCosif);
-            return View(await appDbContext.ToListAsync());
+
+            var viewModel = new MovimentoManualViewModel
+            {
+                Movimentos = await appDbContext.ToListAsync(),//_context.MovimentoManuals.ToList(),
+                MovimentoAtual = new MovimentoManual { COD_USUARIO = "TESTE" }
+            };
+            ViewData["Produtos"] = new SelectList(_context.Produtos, "COD_PRODUTO", "DES_PRODUTO");
+            ViewData["ProdutoCosifs"] = new SelectList(_context.ProdutoCosifs, "COD_COSIF", "COD_CLASSIFICACAO");
+            return View(viewModel);
+
+           // return View(await appDbContext.ToListAsync());
         }
 
         // GET: MovimentoManuals/Details/5
@@ -60,29 +72,79 @@ namespace SinqiaParibas.Controllers
             return View();
         }
 
-      
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DAT_MES,DAT_ANO,NUM_LANCAMENTO,COD_PRODUTO,COD_COSIF,DES_DESCRICAO,DAT_MOVIMENTO,COD_USUARIO,VAL_VALOR")] MovimentoManual movimentoManual)
+        public async Task<IActionResult> Create( MovimentoManualViewModel movimentoManual)
         {
-           // if (ModelState.IsValid)
-           // {
-                movimentoManual.DAT_MOVIMENTO = DateTime.Now;
-                movimentoManual.COD_USUARIO = "TESTE";
+            //if (ModelState.IsValid)
+            //{
+                try
+                {
+                    movimentoManual.MovimentoAtual.DAT_MOVIMENTO = DateTime.Now;
+                    movimentoManual.MovimentoAtual.COD_USUARIO = "TESTE";
 
-                var ultimoLancamento = _context.MovimentosManuais
-                    .Where(m => m.DAT_MES == movimentoManual.DAT_MES && m.DAT_ANO == movimentoManual.DAT_ANO)
-                    .OrderByDescending(m => m.NUM_LANCAMENTO)
-                    .FirstOrDefault();
+                    var ultimoLancamento = _context.MovimentosManuais
+                        .Where(m => m.DAT_MES == movimentoManual.MovimentoAtual.DAT_MES && m.DAT_ANO == movimentoManual.MovimentoAtual.DAT_ANO)
+                        .OrderByDescending(m => m.NUM_LANCAMENTO)
+                        .FirstOrDefault();
 
-                movimentoManual.NUM_LANCAMENTO = (ultimoLancamento?.NUM_LANCAMENTO ?? 0) + 1;
-                _context.Add(movimentoManual);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    movimentoManual.MovimentoAtual.NUM_LANCAMENTO = (ultimoLancamento?.NUM_LANCAMENTO ?? 0) + 1;
+
+                    var movimentoManualEntity = new MovimentoManual
+                    {
+                        DAT_MES = movimentoManual.MovimentoAtual.DAT_MES,
+                        DAT_ANO = movimentoManual.MovimentoAtual.DAT_ANO,
+                        NUM_LANCAMENTO = movimentoManual.MovimentoAtual.NUM_LANCAMENTO,
+                        COD_PRODUTO = movimentoManual.MovimentoAtual.COD_PRODUTO,
+                        COD_COSIF = movimentoManual.MovimentoAtual.COD_COSIF,
+                        DES_DESCRICAO = movimentoManual.MovimentoAtual.DES_DESCRICAO,
+                        DAT_MOVIMENTO = movimentoManual.MovimentoAtual.DAT_MOVIMENTO,
+                        COD_USUARIO = movimentoManual.MovimentoAtual.COD_USUARIO,
+                        VAL_VALOR = movimentoManual.MovimentoAtual.VAL_VALOR
+                    };
+
+                    _context.MovimentosManuais.Add(movimentoManualEntity);
+                    await _context.SaveChangesAsync();
+
+                // Recarrega os dados para o grid
+                var movimentos = await _context.MovimentosManuais
+                    .Include(m => m.ProdutoCosif.Produto) // Ajuste conforme os relacionamentos
+                    .ToListAsync();
+
+                return PartialView("_MovimentosGrid", movimentos);
+
+
+                //return Json(new
+                //{
+                //    DAT_MES = movimentoManualEntity.DAT_MES,
+                //    DAT_ANO = movimentoManualEntity.DAT_ANO,
+                //    COD_PRODUTO = movimentoManualEntity.COD_PRODUTO,
+                //    DES_PRODUTO = "DESC",//movimentoManualEntity.DES_PRODUTO, // Exemplo de produto
+                //    NUM_LANCAMENTO = movimentoManualEntity.NUM_LANCAMENTO,
+                //    DES_DESCRICAO = movimentoManualEntity.DES_DESCRICAO,
+                //    VAL_VALOR = movimentoManualEntity.VAL_VALOR
+                //});
+                //return Json(movimentoManualEntity); // Retorna os dados do movimento manual criado
+                }
+                catch (Exception ex)
+                {
+                    // Log do erro para depuração
+                    return BadRequest($"Erro ao salvar no banco: {ex.Message}");
+                }
             //}
-            //ViewData["COD_PRODUTO"] = new SelectList(_context.ProdutoCosifs, "COD_PRODUTO", "COD_PRODUTO", movimentoManual.COD_PRODUTO);
-            //return View(movimentoManual);
+            //else
+            //{
+            //    // Se o modelo não for válido, retorne os erros de validação
+            //    return BadRequest(ModelState);
+            //}
         }
+        public async Task<IActionResult> GetGrid()
+        {
+            var movimentos = await _context.MovimentosManuais.ToListAsync(); // Busque os dados necessários
+            return PartialView("_MovimentosGrid", movimentos); // Retorne a partial com os dados
+        }
+
+
 
         // GET: MovimentoManuals/Edit/5
         public async Task<IActionResult> Edit(int? mes, int? ano, int? lancamento)

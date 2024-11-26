@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SinqiaMVC.Models
+namespace SinqiaParibas.Models
 {
     public class MovimentoManual
     {

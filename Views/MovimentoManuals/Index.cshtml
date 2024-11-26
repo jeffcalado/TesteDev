@@ -1,4 +1,5 @@
-﻿@model IEnumerable<SinqiaMVC.Models.MovimentoManual>
+﻿@model SinqiaParibas.ViewModels.MovimentoManualViewModel
+
 
 @{
     ViewData["Title"] = "Movimentos Manuais";
@@ -6,67 +7,81 @@
 
 <h1>Movimentos Manuais</h1>
 
-<p>
-    <a asp-action="Create">Novo</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Mês
-            </th>
-            <th>
-                Ano
-            </th>
-            <th>
-                Códido do Produto
-            </th>
-            <th>
-                Descrição do Produto
-            </th>
-            <th>
-                NR Lançamento
-            </th>
-            <th>
-                Descrição
-            </th>
-            <th>
-               Valor
-            </th>
-           
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DAT_MES)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DAT_ANO)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.COD_PRODUTO)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProdutoCosif.Produto.DES_PRODUTO)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NUM_LANCAMENTO)
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DES_DESCRICAO)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VAL_VALOR)
-            </td>
-            <td>
-                    @Html.ActionLink("Edit", "Edit", new { mes = item.DAT_MES, ano = item.DAT_ANO , lancamento = item.NUM_LANCAMENTO }) |
-              @*   @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) *@
-            </td>
-        </tr>
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" id="movimentoForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="MovimentoAtual.DAT_MES">Mês</label>
+                    <input asp-for="MovimentoAtual.DAT_MES" type="number" class="form-control" id="MovimentoAtual.DAT_MES" name="MovimentoAtual.DAT_MES" required disabled />
+                    
+                </div>
+
+                <div class="form-group">
+                    <label for="MovimentoAtual.DAT_ANO">Ano</label>
+                    <input type="number" class="form-control" asp-for="MovimentoAtual.DAT_ANO" id="MovimentoAtual.DAT_ANO" name="MovimentoAtual.DAT_ANO" required disabled />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="MovimentoAtual.COD_PRODUTO">Produto</label>
+                    <select class="form-control" id="MovimentoAtual.COD_PRODUTO" name="MovimentoAtual.COD_PRODUTO" disabled>
+                        <option value="0"> --Selecione--</option>
+                        @foreach (var produto in ViewData["Produtos"] as SelectList)
+                        {
+                            <option value="@produto.Value">@produto.Text</option>
+                        }
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="MovimentoAtual.COD_COSIF">Cosif</label>
+                    <select asp-for="MovimentoAtual.COD_COSIF" class="form-control" id="MovimentoAtual.COD_COSIF" name="MovimentoAtual.COD_COSIF" disabled>
+                        <option value="0"> --Selecione--</option>
+                        @foreach (var produtocosif in ViewData["ProdutoCosifs"] as SelectList)
+                        {
+                            <option value="@produtocosif.Value"> @produtocosif.Value - (@produtocosif.Text)</option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="MovimentoAtual.DES_DESCRICAO">Descrição</label>
+                <textarea class="form-control" asp-for="MovimentoAtual.DES_DESCRICAO" id="MovimentoAtual.DES_DESCRICAO" name="MovimentoAtual.DES_DESCRICAO" required disabled></textarea>
+            </div>
+            <div class="form-group">
+                <label for="MovimentoAtual.VAL_VALOR">Valor</label>
+                <input type="number" class="form-control" id="MovimentoAtual.VAL_VALOR" name="MovimentoAtual.VAL_VALOR" step="0.01" required disabled />
+            </div>
+
+            <input asp-for="MovimentoAtual.COD_USUARIO" class="form-control" hidden="hidden" />
+
+
+            <hr />
+
+            <button type="reset" class="btn btn-primary">Limpar</button>
+            <button type="button" id="btnNovo" class="btn btn-primary">Novo</button>
+            <button type="submit" id="btnIncluir" value="Novo" class="btn btn-primary">Incluir</button>
+
+        </form>
+    </div>
+</div>
+
+<div id="gridContainer">
+    @await Html.PartialAsync("_MovimentosGrid", Model.Movimentos)
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_MovimentoScripts");
+    }
 }
-    </tbody>
-</table>
+
