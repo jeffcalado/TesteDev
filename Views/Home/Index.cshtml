@@ -1,18 +1,26 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<div class="container text-center mt-5">
+    <h1 class="mb-4">Test for BNP Paribas - Jefferson Calado</h1>
 
-<div class="text-center">
-    <h1>Bem vindo ao Teste de Jefferson Calado</h1>
-    
     <div class="text-warning">
-        <p>Stack:</p>
-    <div class="row col-3">
-        <ul><li>MVC</li> <li>.NET 8</li><li>Entity Frame Core 9.0</li><li>REST</li><li>SQL Server(Azure)</li><li>xUnit</li></ul>
-
+        <p class="h5">Stack:</p>
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <ul class="list-group">
+                    <li class="list-group-item">MVC</li>
+                    <li class="list-group-item">.NET 8</li>
+                    <li class="list-group-item">Entity Framework Core 9.0</li>
+                    <li class="list-group-item">REST</li>
+                    <li class="list-group-item">SQL Server (Azure)</li>
+                    <li class="list-group-item">xUnit</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    </div>
-    
 
-    <a asp-controller="MovimentoManuals" asp-action="Index">Começar</a>
+    <div class="mt-4">
+        <a asp-controller="MovimentoManuals" asp-action="Index" class="btn btn-primary btn-lg">CLICK TO START</a>
+    </div>
 </div>

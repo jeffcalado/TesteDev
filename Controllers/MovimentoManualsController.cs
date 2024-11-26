@@ -33,9 +33,10 @@ namespace SinqiaParibas.Controllers
             };
             ViewData["Produtos"] = new SelectList(_context.Produtos, "COD_PRODUTO", "DES_PRODUTO");
             ViewData["ProdutoCosifs"] = new SelectList(_context.ProdutoCosifs, "COD_COSIF", "COD_CLASSIFICACAO");
+            
             return View(viewModel);
 
-           // return View(await appDbContext.ToListAsync());
+          
         }
 
         // GET: MovimentoManuals/Details/5
@@ -57,14 +58,6 @@ namespace SinqiaParibas.Controllers
             return View(movimentoManual);
         }
 
-        // GET: MovimentoManuals/Create
-        // public IActionResult Create()
-        // {
-
-
-        // ViewData["COD_PRODUTO"] = new SelectList(_context.ProdutoCosifs, "COD_PRODUTO", "COD_PRODUTO");
-        // return View();
-        //}
         public IActionResult Create()
         {
             ViewData["Produtos"] = new SelectList(_context.Produtos, "COD_PRODUTO", "DES_PRODUTO");
@@ -76,8 +69,7 @@ namespace SinqiaParibas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create( MovimentoManualViewModel movimentoManual)
         {
-            //if (ModelState.IsValid)
-            //{
+          
                 try
                 {
                     movimentoManual.MovimentoAtual.DAT_MOVIMENTO = DateTime.Now;
@@ -114,29 +106,13 @@ namespace SinqiaParibas.Controllers
                 return PartialView("_MovimentosGrid", movimentos);
 
 
-                //return Json(new
-                //{
-                //    DAT_MES = movimentoManualEntity.DAT_MES,
-                //    DAT_ANO = movimentoManualEntity.DAT_ANO,
-                //    COD_PRODUTO = movimentoManualEntity.COD_PRODUTO,
-                //    DES_PRODUTO = "DESC",//movimentoManualEntity.DES_PRODUTO, // Exemplo de produto
-                //    NUM_LANCAMENTO = movimentoManualEntity.NUM_LANCAMENTO,
-                //    DES_DESCRICAO = movimentoManualEntity.DES_DESCRICAO,
-                //    VAL_VALOR = movimentoManualEntity.VAL_VALOR
-                //});
-                //return Json(movimentoManualEntity); // Retorna os dados do movimento manual criado
                 }
                 catch (Exception ex)
                 {
                     // Log do erro para depuração
                     return BadRequest($"Erro ao salvar no banco: {ex.Message}");
                 }
-            //}
-            //else
-            //{
-            //    // Se o modelo não for válido, retorne os erros de validação
-            //    return BadRequest(ModelState);
-            //}
+        
         }
         public async Task<IActionResult> GetGrid()
         {

@@ -24,9 +24,9 @@
                 <td>@item.NUM_LANCAMENTO</td>
                 <td>@item.DES_DESCRICAO</td>
                 <td>@item.VAL_VALOR</td>
-                <td>
+               @*  <td> Desisti de criar Edição e Exclusão pelo prazo de entrega que deram
                     @Html.ActionLink("Edit", "Edit", new { mes = item.DAT_MES, ano = item.DAT_ANO, lancamento = item.NUM_LANCAMENTO })
-                </td>
+                </td> *@
             </tr>
         }
     </tbody>
